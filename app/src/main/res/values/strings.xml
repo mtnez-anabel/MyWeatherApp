@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">MyWeatherApp</string>
+    <string name="weather_in_milan_text">Weather in Milan</string>
+    <string name="today">Today</string>
+    <string name="appwidget_text">EXAMPLE</string>
+    <string name="add_widget">Add widget</string>
 </resources>
