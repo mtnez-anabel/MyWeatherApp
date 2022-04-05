@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.core.view.size
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope
 import com.anabelmm.myweatherapp.R
@@ -75,23 +76,24 @@ class MainActivity : AppCompatActivity() {
         var maxT = wd.list5DaysWeather[0].maxValue!!
         bindingMain.maxAndMinText.text = setMaxAndMinTemperature(minT, maxT)
 
-        for (i in 1..4) {
-            bindingDailyInfo = DailyInfoItemBinding.inflate(layoutInflater)
-            bindingDailyInfo.dayTextView.text = getWeekday(i)
-            minT = wd.list5DaysWeather[i].minValue!!
-            maxT = wd.list5DaysWeather[i].maxValue!!
-            bindingDailyInfo.maxAndMinDayTextView.text = setMaxAndMinTemperature(minT, maxT)
-            bindingMain.forecastFiveDaysLinearLayout.addView(bindingDailyInfo.root)
-        }
-
-        for (i in 0..11) {
-            bindingHourlyInfo = HourlyInfoItemBinding.inflate(layoutInflater)
-            val epoc = wd.list12HWeather[i].epochDateTime!!
-            bindingHourlyInfo.hourItemText.text = getEachHour(epoc)
-            val eachTemp = wd.list12HWeather[i].hourlyTempValue!!
-            bindingHourlyInfo.temperatureItemText.text =
-                mf.format(Measure(eachTemp, MeasureUnit.CELSIUS))
-            bindingMain.linearHorizontalLayout.addView(bindingHourlyInfo.root)
+        if( bindingMain.linearHorizontalLayout.size == 0) {
+            for (i in 0..11) {
+                bindingHourlyInfo = HourlyInfoItemBinding.inflate(layoutInflater)
+                val epoc = wd.list12HWeather[i].epochDateTime!!
+                bindingHourlyInfo.hourItemText.text = getEachHour(epoc)
+                val eachTemp = wd.list12HWeather[i].hourlyTempValue!!
+                bindingHourlyInfo.temperatureItemText.text =
+                    mf.format(Measure(eachTemp, MeasureUnit.CELSIUS))
+                bindingMain.linearHorizontalLayout.addView(bindingHourlyInfo.root)
+            }
+            for (i in 1..4) {
+                bindingDailyInfo = DailyInfoItemBinding.inflate(layoutInflater)
+                bindingDailyInfo.dayTextView.text = getWeekday(i)
+                minT = wd.list5DaysWeather[i].minValue!!
+                maxT = wd.list5DaysWeather[i].maxValue!!
+                bindingDailyInfo.maxAndMinDayTextView.text = setMaxAndMinTemperature(minT, maxT)
+                bindingMain.forecastFiveDaysLinearLayout.addView(bindingDailyInfo.root)
+            }
         }
 
     }
