@@ -4,6 +4,8 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Work/Android/Projects/MyWeatherApp/app/src/main/res/layout/activity_main.xml" value="0.415625" />
+        <entry key="..\:/Work/Android/Projects/MyWeatherApp/app/src/main/res/layout/daily_info_item.xml" value="0.4041666666666667" />
+        <entry key="..\:/Work/Android/Projects/MyWeatherApp/app/src/main/res/layout/hourly_info_item.xml" value="0.4041666666666667" />
       </map>
     </option>
   </component>

@@ -16,6 +16,6 @@
 
     <style name="ThemeOverlay.MyWeatherApp.AppWidgetContainer" parent="">
         <item name="appWidgetBackgroundColor">@color/light_blue_600</item>
-        <item name="appWidgetTextColor">@color/light_blue_50</item>
+        <item name="appWidgetTextColor">#F8F4F4</item>
     </style>
 </resources>

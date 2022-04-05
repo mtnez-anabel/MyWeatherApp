@@ -1,3 +1,4 @@
+package com.anabelmm.myweatherapp.repository_model
 import com.google.gson.annotations.SerializedName
 
 data class Forecast5DData(

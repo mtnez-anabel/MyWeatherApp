@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@mipmap/blue_sky_bg"
     android:orientation="vertical"
+    android:scrollbarStyle="outsideOverlay"
+    android:scrollbars="vertical"
+    android:isScrollContainer="true"
     tools:context=".view.MainActivity">
 
     <TextView
@@ -38,18 +41,20 @@
             android:textSize="50sp" />
 
         <ImageView
-            android:id="@+id/imageView3"
+            android:id="@+id/icon_image"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
+            android:layout_marginLeft="20dp"
             android:layout_weight="1"
             app:srcCompat="@drawable/sunny_ic" />
 
         <TextView
-            android:id="@+id/textView3"
+            android:id="@+id/currTemp_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_weight="1" />
+            android:layout_weight="1"
+            android:textSize="48sp" />
 
     </LinearLayout>
 
@@ -67,18 +72,18 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/weekday_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_weight="2"
-            android:textAlignment="textEnd" />
-
-        <TextView
             android:id="@+id/today_text"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
+            android:layout_weight="2"
             android:text="@string/today"
+            android:textAlignment="center" />
+
+        <TextView
+            android:id="@+id/weekday_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:textAlignment="textStart" />
 
         <TextView
@@ -86,7 +91,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:text="TextView"
             android:textAlignment="center" />
     </LinearLayout>
 
@@ -135,18 +139,17 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/textView11"
+            android:id="@+id/website_text"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:layout_weight="1"
-            android:onClick="openLink"
-            android:text="accuweather.com"
+            android:text="@string/accuweather_website"
             android:textAlignment="center"
             tools:ignore="UsingOnClickInXml" />
 
         <ImageView
-            android:id="@+id/imageView4"
+            android:id="@+id/website_image"
             android:layout_width="80dp"
             android:layout_height="40dp"
             android:layout_weight="1"
@@ -156,3 +159,6 @@
 
 
 </LinearLayout>
+
+
+    <!--    android:background="@mipmap/blue_sky_bg"-->

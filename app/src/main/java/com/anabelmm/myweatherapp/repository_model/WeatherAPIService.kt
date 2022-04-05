@@ -1,3 +1,5 @@
+package com.anabelmm.myweatherapp.repository_model
+
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
@@ -20,7 +22,11 @@ interface CurrCondAPIService {
 }
 
 object APICurrentCondition {
-    val retrofitServiceCurrCond: CurrCondAPIService by lazy { retrofit.create(CurrCondAPIService::class.java) }
+    val retrofitServiceCurrCond: CurrCondAPIService by lazy {
+        retrofit.create(
+            CurrCondAPIService::class.java
+        )
+    }
 }
 
 //////////////////////////////////////////////////////////////////////
