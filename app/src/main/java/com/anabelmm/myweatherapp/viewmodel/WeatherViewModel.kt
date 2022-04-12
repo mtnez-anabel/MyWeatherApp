@@ -11,7 +11,7 @@ class WeatherViewModel(): ViewModel() {
     val weatherModel = MutableLiveData<DataManagerAPIClient.WeatherData>()
     fun onCreate() {
         viewModelScope.launch {
-            val result = repository.getWeatherDataFromApi()
+            val result = repository.getWeatherData()
             weatherModel.postValue(result)
         }
     }

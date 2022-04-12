@@ -15,6 +15,7 @@ import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
+import androidx.core.view.get
 import androidx.core.view.size
 import androidx.lifecycle.Observer
 import androidx.lifecycle.lifecycleScope

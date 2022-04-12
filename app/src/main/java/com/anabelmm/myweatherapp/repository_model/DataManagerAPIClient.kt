@@ -1,6 +1,12 @@
 package com.anabelmm.myweatherapp.repository_model
 
+import retrofit2.Response
+
 class DataManagerAPIClient {
+    lateinit var responseCurrentCond: Response<List<CurrentConditionData>>
+    lateinit var responseForecast5D: Response<Forecast5DData>
+    lateinit var responseForecast12H: Response<List<Forecast12HData>>
+
     data class WeatherData(
         var currWeatherPhrase: String?,
         var isDayTime: Boolean?,
@@ -25,10 +31,14 @@ class DataManagerAPIClient {
         var hourlyTempValue: Double?
     )
 
-    suspend fun getAllWeatherData(): WeatherData {
-        val responseCurrentCond = APICurrentCondition.retrofitServiceCurrCond.getCurrentCondition()
-        val responseForecast5D = APIForecast5D.retrofitServiceForecast5D.getForecast5D()
-        val responseForecast12H = APIForecast12H.retrofitServiceForecast12H.getForecast12H()
+    suspend fun getAllWeatherData(): WeatherData? {
+        responseCurrentCond = APICurrentCondition.retrofitServiceCurrCond.getCurrentCondition()
+        responseForecast5D = APIForecast5D.retrofitServiceForecast5D.getForecast5D()
+        responseForecast12H = APIForecast12H.retrofitServiceForecast12H.getForecast12H()
+
+        //isSuccessful() returns true if code() is in the range [200..300):
+        if (!responseCurrentCond.isSuccessful || !responseForecast5D.isSuccessful || !responseForecast12H.isSuccessful) 
+            return null
 
         val listD = mutableListOf<Each5Days>()
         for (i in 0..4) {
