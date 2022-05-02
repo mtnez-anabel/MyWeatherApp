@@ -8,6 +8,7 @@ class DataManagerAPIClient {
     lateinit var responseForecast12H: Response<List<Forecast12HData>>
 
     data class WeatherData(
+        var observationDateTime: String?,
         var currWeatherPhrase: String?,
         var isDayTime: Boolean?,
         var currTemperature: Double?,
@@ -59,6 +60,7 @@ class DataManagerAPIClient {
         }
 
         return WeatherData(
+            observationDateTime = responseCurrentCond.body()?.get(0)?.localObservationDateTime,
             currWeatherPhrase = responseCurrentCond.body()?.get(0)?.weatherPhrase,
             isDayTime = responseCurrentCond.body()?.get(0)?.isDayTime,
             currTemperature = responseCurrentCond.body()

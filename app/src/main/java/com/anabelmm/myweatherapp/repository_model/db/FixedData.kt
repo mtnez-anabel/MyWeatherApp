@@ -5,6 +5,7 @@ import com.anabelmm.myweatherapp.repository_model.DataManagerAPIClient
 class FixedData {
     companion object {
         val fixedData = DataManagerAPIClient.WeatherData(
+            observationDateTime = "2022-03-14T12:12:00+01:00",
             currWeatherPhrase = "Sunny",
             isDayTime = true,
             currTemperature = 18.5,

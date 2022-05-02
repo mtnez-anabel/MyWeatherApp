@@ -11,15 +11,10 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import androidx.activity.viewModels
 import androidx.annotation.RequiresApi
-import androidx.core.view.get
 import androidx.core.view.size
+import androidx.lifecycle.*
 import androidx.lifecycle.Observer
-import androidx.lifecycle.lifecycleScope
-import com.anabelmm.myweatherapp.R
 import com.anabelmm.myweatherapp.databinding.ActivityMainBinding
 import com.anabelmm.myweatherapp.databinding.DailyInfoItemBinding
 import com.anabelmm.myweatherapp.databinding.HourlyInfoItemBinding
@@ -39,8 +34,17 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bindingMain: ActivityMainBinding
     private lateinit var bindingDailyInfo: DailyInfoItemBinding
     private lateinit var bindingHourlyInfo: HourlyInfoItemBinding
-    private val weatherViewModel: WeatherViewModel by viewModels()
-
+    private val weatherViewModel: WeatherViewModel by lazy {
+        ViewModelProvider(
+            this,
+            factory
+        )[WeatherViewModel::class.java]
+    }
+    var factory = object : ViewModelProvider.Factory {
+        override fun <T : ViewModel> create(modelClass: Class<T>): T {
+            return WeatherViewModel(this@MainActivity.applicationContext, lifecycleScope) as T
+        }
+    }
     @SuppressLint("InflateParams")
     @RequiresApi(Build.VERSION_CODES.O)
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -77,7 +81,7 @@ class MainActivity : AppCompatActivity() {
         var maxT = wd.list5DaysWeather[0].maxValue!!
         bindingMain.maxAndMinText.text = setMaxAndMinTemperature(minT, maxT)
 
-        if( bindingMain.linearHorizontalLayout.size == 0) {
+        if (bindingMain.linearHorizontalLayout.size == 0) {
             for (i in 0..11) {
                 bindingHourlyInfo = HourlyInfoItemBinding.inflate(layoutInflater)
                 val epoc = wd.list12HWeather[i].epochDateTime!!
@@ -96,7 +100,6 @@ class MainActivity : AppCompatActivity() {
                 bindingMain.forecastFiveDaysLinearLayout.addView(bindingDailyInfo.root)
             }
         }
-
     }
 
 

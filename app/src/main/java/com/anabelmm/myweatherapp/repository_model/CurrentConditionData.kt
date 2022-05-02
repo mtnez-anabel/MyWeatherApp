@@ -3,6 +3,7 @@ package com.anabelmm.myweatherapp.repository_model
 import com.google.gson.annotations.SerializedName
 
 data class CurrentConditionData(
+    @SerializedName("LocalObservationDateTime") val localObservationDateTime: String,
     @SerializedName("Temperature") val temperature: Temperature,
     @SerializedName("WeatherText") val weatherPhrase: String,
     @SerializedName("IsDayTime") val isDayTime: Boolean,
