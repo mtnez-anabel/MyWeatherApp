@@ -54,7 +54,6 @@ class MainActivity : AppCompatActivity() {
         lifecycleScope.launch {
             weatherViewModel.onCreate()
             weatherViewModel.weatherModel.observe(this@MainActivity, Observer {
-                Log.i("Data............", weatherViewModel.weatherModel.value.toString())
                 initConfig(it)
             })
         }

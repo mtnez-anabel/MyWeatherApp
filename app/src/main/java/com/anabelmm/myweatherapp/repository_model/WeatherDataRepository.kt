@@ -1,6 +1,7 @@
 package com.anabelmm.myweatherapp.repository_model
 
 import android.content.Context
+import android.util.Log
 import com.anabelmm.myweatherapp.repository_model.db.DataBaseManager
 import com.anabelmm.myweatherapp.repository_model.db.FixedData
 import com.anabelmm.myweatherapp.repository_model.db.WeatherDao
@@ -15,10 +16,22 @@ class WeatherDataRepository(context: Context, scope: CoroutineScope) {
     private val cxt = context
     private val scp = scope
     suspend fun getWeatherData(): DataManagerAPIClient.WeatherData {
-        return getWeatherDataFromApi() ?:  //if I exceeded my 50 calls per day the Weather data from Api will be null
-        return getWeatherDataFromDB()      //then return the Weather data from a data base
+        val dataDB = getWeatherDataFromDB()
+        val currTime = System.currentTimeMillis()
+        val prevTime = dataDB.list12HWeather[0].epochDateTime!!
+        val deltaTime =
+            (currTime - prevTime)/60000   // The elapsed time converted to min, between current time and previously time of call to server
+        return if (deltaTime > 60) {        // If more than 60 min has elapsed, it makes a new call to server, otherwise get data from Data Base
+            val dataApi = getWeatherDataFromApi()
+            if (dataApi == null) {        //if I exceeded my 50 calls per day or there is a problem connecting with the service,
+                dataDB                         // the Weather data from Api will be null, then return the Weather data from the data base
+            } else {
+                dm.updateDataBase(dao, dataApi)
+                dataApi
+            }
+        } else
+            dataDB
     }
-
     private suspend fun getWeatherDataFromApi(): DataManagerAPIClient.WeatherData? =
         api.getAllWeatherData()
 

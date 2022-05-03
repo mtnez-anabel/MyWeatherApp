@@ -30,7 +30,6 @@ abstract class WeatherDataBase : RoomDatabase() {
                 )
                     .addCallback(WeatherDataBaseCallback(scope))
                     .build()
-                Log.i("!!!!!!!!!!", "its created....................")
                 INSTANCE = instance
                 // return instance
                 instance
@@ -46,7 +45,6 @@ abstract class WeatherDataBase : RoomDatabase() {
     ) : RoomDatabase.Callback() {
         override fun onCreate(db: SupportSQLiteDatabase) {
             super.onCreate(db)
-            Log.i("!!!!!!!!!!", "after onCreate from callback....................")
             INSTANCE?.let { database ->
                 scope.launch {
                     val dao = database.getWeatherDao()
@@ -54,7 +52,6 @@ abstract class WeatherDataBase : RoomDatabase() {
                     //to avoid crashes if server fails
                     val manager = DataBaseManager()
                     manager.setToDB(dao, FixedData.fixedData)
-                    Log.i("!!!!!!!!!!", "its populated....................")
                 }
 
             }

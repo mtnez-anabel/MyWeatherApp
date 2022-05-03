@@ -11,39 +11,13 @@ class DataBaseManager {
             currTemperature = data.currTemperature!!,
             realFeelTemperature = data.realFeelTemperature!!
         )
-        val list5D = mutableListOf<Each5DaysEntity>()
-        for (i in 0..4) {
-            val each5Days = Each5DaysEntity(
-                idDay = i,
-                momentObservation5D = data.observationDateTime!!,
-                minValue = data.list5DaysWeather[i].minValue!!,
-                maxValue = data.list5DaysWeather[i].maxValue!!,
-                iconDay = data.list5DaysWeather[i].iconDay!!,
-                dayPhrase = data.list5DaysWeather[i].dayPhrase!!,
-                iconNight = data.list5DaysWeather[i].iconNight!!,
-                nightPhrase = data.list5DaysWeather[i].nightPhrase!!
-            )
-            list5D.add(each5Days)
-        }
-
-        val list12H = mutableListOf<Each12HoursEntity>()
-        for (i in 0..11) {
-            val each12Hours = Each12HoursEntity(
-                idHour = i,
-                momentObservation12H = data.observationDateTime!!,
-                epochDateTime = data.list12HWeather[i].epochDateTime!!,
-                weatherIcon = data.list12HWeather[i].weatherIcon!!,
-                hourlyTempValue = data.list12HWeather[i].hourlyTempValue!!
-            )
-            list12H.add(each12Hours)
-        }
+        val list5D = getListEach5DaysEntity(data)
+        val list12H = getListEach12HoursEntity(data)
         dao.insertData(currCond, list5D, list12H)
     }
 
     suspend fun getFromDB(dao: WeatherDao): DataManagerAPIClient.WeatherData {
         val weatherRelations = dao.getWeatherData()
-//        val listEach5DaysEntity = dao.getList5DaysData()
-//        val listEach12HoursEntity = dao.getList12HoursData()
         val list5DaysWeather = mutableListOf<DataManagerAPIClient.Each5Days>()
         for (i in 0..4){
             val each5Days = DataManagerAPIClient.Each5Days(
@@ -74,5 +48,54 @@ class DataBaseManager {
             list5DaysWeather = list5DaysWeather,
             list12HWeather = list12HWeather
         )
+    }
+
+    suspend fun updateDataBase(dao: WeatherDao, data: DataManagerAPIClient.WeatherData){
+        val dataEntities = dao.getWeatherData()
+        val currCond = getCurrentConditionsEntity(data)
+        val list5D = getListEach5DaysEntity(data)
+        val list12H = getListEach12HoursEntity(data)
+        dao.updateData(dataEntities.currCond, dataEntities.list5D, dataEntities.list12H, currCond, list5D, list12H)
+    }
+
+    private fun getCurrentConditionsEntity(data: DataManagerAPIClient.WeatherData): CurrentConditionsEntity{
+        return CurrentConditionsEntity(
+            observationDateTime = data.observationDateTime!!,
+            currWeatherPhrase = data.currWeatherPhrase!!,
+            isDayTime = data.isDayTime!!,
+            currTemperature = data.currTemperature!!,
+            realFeelTemperature = data.realFeelTemperature!!
+        )
+    }
+    private fun getListEach5DaysEntity(data: DataManagerAPIClient.WeatherData) : List<Each5DaysEntity>{
+        val list5D = mutableListOf<Each5DaysEntity>()
+        for (i in 0..4) {
+            val each5Days = Each5DaysEntity(
+                idDay = i,
+                momentObservation5D = data.observationDateTime!!,
+                minValue = data.list5DaysWeather[i].minValue!!,
+                maxValue = data.list5DaysWeather[i].maxValue!!,
+                iconDay = data.list5DaysWeather[i].iconDay!!,
+                dayPhrase = data.list5DaysWeather[i].dayPhrase!!,
+                iconNight = data.list5DaysWeather[i].iconNight!!,
+                nightPhrase = data.list5DaysWeather[i].nightPhrase!!
+            )
+            list5D.add(each5Days)
+        }
+        return list5D
+    }
+    private fun getListEach12HoursEntity(data: DataManagerAPIClient.WeatherData): List<Each12HoursEntity> {
+        val list12H = mutableListOf<Each12HoursEntity>()
+        for (i in 0..11) {
+            val each12Hours = Each12HoursEntity(
+                idHour = i,
+                momentObservation12H = data.observationDateTime!!,
+                epochDateTime = data.list12HWeather[i].epochDateTime!!,
+                weatherIcon = data.list12HWeather[i].weatherIcon!!,
+                hourlyTempValue = data.list12HWeather[i].hourlyTempValue!!
+            )
+            list12H.add(each12Hours)
+        }
+        return list12H
     }
 }
