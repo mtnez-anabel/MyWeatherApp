@@ -10,17 +10,19 @@ import kotlinx.coroutines.*
 
 class WeatherDataRepository(context: Context, scope: CoroutineScope) {
     private val api: DataManagerAPIClient = DataManagerAPIClient()
-    private lateinit var db: WeatherDataBase
+    private val db: WeatherDataBase = WeatherDataBase.getDatabase(context, scope)
     private val dm: DataBaseManager = DataBaseManager()
-    private lateinit var dao: WeatherDao
-    private val cxt = context
-    private val scp = scope
+    private val dao: WeatherDao = db.getWeatherDao()
+
     suspend fun getWeatherData(): DataManagerAPIClient.WeatherData {
+        if(dao.getWeatherData() == null){
+            dm.setToDB(dao, FixedData.fixedData)
+        }
         val dataDB = getWeatherDataFromDB()
         val currTime = System.currentTimeMillis()
-        val prevTime = dataDB.list12HWeather[0].epochDateTime!!
-        val deltaTime =
-            (currTime - prevTime)/60000   // The elapsed time converted to min, between current time and previously time of call to server
+        val prevTime = dataDB.list12HWeather[0].epochDateTime!! //It's in seconds
+        val deltaTime =               // The elapsed time in min, between current time and previously time of call to server, prevTime must to be converted
+            (currTime/1000 - prevTime)/60  // from sec to min, while currTime from millisecond to min
         return if (deltaTime > 60) {        // If more than 60 min has elapsed, it makes a new call to server, otherwise get data from Data Base
             val dataApi = getWeatherDataFromApi()
             if (dataApi == null) {        //if I exceeded my 50 calls per day or there is a problem connecting with the service,
@@ -35,14 +37,6 @@ class WeatherDataRepository(context: Context, scope: CoroutineScope) {
     private suspend fun getWeatherDataFromApi(): DataManagerAPIClient.WeatherData? =
         api.getAllWeatherData()
 
-    private suspend fun getWeatherDataFromDB(): DataManagerAPIClient.WeatherData {
-        db = WeatherDataBase.getDatabase(cxt, scp)
-        dao = db.getWeatherDao()
-        if (dm.getFromDB(dao).isDayTime == null)
-            dm.setToDB(dao, FixedData.fixedData)
-        return dm.getFromDB(dao)
-
-    }
-
-
+    private suspend fun getWeatherDataFromDB(): DataManagerAPIClient.WeatherData =
+        dm.getFromDB(dao)
 }

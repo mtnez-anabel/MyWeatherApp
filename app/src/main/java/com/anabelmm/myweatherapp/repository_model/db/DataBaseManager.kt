@@ -1,6 +1,11 @@
 package com.anabelmm.myweatherapp.repository_model.db
 
 import com.anabelmm.myweatherapp.repository_model.DataManagerAPIClient
+import kotlinx.coroutines.InternalCoroutinesApi
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.internal.synchronized
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.runInterruptible
 
 class DataBaseManager {
     suspend fun setToDB(dao: WeatherDao, data: DataManagerAPIClient.WeatherData) {
@@ -19,9 +24,9 @@ class DataBaseManager {
     suspend fun getFromDB(dao: WeatherDao): DataManagerAPIClient.WeatherData {
         val weatherRelations = dao.getWeatherData()
         val list5DaysWeather = mutableListOf<DataManagerAPIClient.Each5Days>()
-        for (i in 0..4){
+        for (i in 0..4) {
             val each5Days = DataManagerAPIClient.Each5Days(
-                minValue =  weatherRelations.list5D[i].minValue ,
+                minValue = weatherRelations.list5D[i].minValue,
                 maxValue = weatherRelations.list5D[i].maxValue,
                 iconDay = weatherRelations.list5D[i].iconDay,
                 dayPhrase = weatherRelations.list5D[i].dayPhrase,
@@ -31,11 +36,11 @@ class DataBaseManager {
             list5DaysWeather.add(each5Days)
         }
         val list12HWeather = mutableListOf<DataManagerAPIClient.Each12H>()
-        for (i in 0..11){
+        for (i in 0..11) {
             val each12Hours = DataManagerAPIClient.Each12H(
                 epochDateTime = weatherRelations.list12H[i].epochDateTime,
-                weatherIcon  = weatherRelations.list12H[i].weatherIcon,
-                hourlyTempValue  = weatherRelations.list12H[i].hourlyTempValue
+                weatherIcon = weatherRelations.list12H[i].weatherIcon,
+                hourlyTempValue = weatherRelations.list12H[i].hourlyTempValue
             )
             list12HWeather.add(each12Hours)
         }
@@ -50,15 +55,22 @@ class DataBaseManager {
         )
     }
 
-    suspend fun updateDataBase(dao: WeatherDao, data: DataManagerAPIClient.WeatherData){
+    suspend fun updateDataBase(dao: WeatherDao, data: DataManagerAPIClient.WeatherData) {
         val dataEntities = dao.getWeatherData()
         val currCond = getCurrentConditionsEntity(data)
         val list5D = getListEach5DaysEntity(data)
         val list12H = getListEach12HoursEntity(data)
-        dao.updateData(dataEntities.currCond, dataEntities.list5D, dataEntities.list12H, currCond, list5D, list12H)
+        dao.updateData(
+            dataEntities.currCond,
+            dataEntities.list5D,
+            dataEntities.list12H,
+            currCond,
+            list5D,
+            list12H
+        )
     }
 
-    private fun getCurrentConditionsEntity(data: DataManagerAPIClient.WeatherData): CurrentConditionsEntity{
+    private fun getCurrentConditionsEntity(data: DataManagerAPIClient.WeatherData): CurrentConditionsEntity {
         return CurrentConditionsEntity(
             observationDateTime = data.observationDateTime!!,
             currWeatherPhrase = data.currWeatherPhrase!!,
@@ -67,7 +79,8 @@ class DataBaseManager {
             realFeelTemperature = data.realFeelTemperature!!
         )
     }
-    private fun getListEach5DaysEntity(data: DataManagerAPIClient.WeatherData) : List<Each5DaysEntity>{
+
+    private fun getListEach5DaysEntity(data: DataManagerAPIClient.WeatherData): List<Each5DaysEntity> {
         val list5D = mutableListOf<Each5DaysEntity>()
         for (i in 0..4) {
             val each5Days = Each5DaysEntity(
@@ -84,6 +97,7 @@ class DataBaseManager {
         }
         return list5D
     }
+
     private fun getListEach12HoursEntity(data: DataManagerAPIClient.WeatherData): List<Each12HoursEntity> {
         val list12H = mutableListOf<Each12HoursEntity>()
         for (i in 0..11) {

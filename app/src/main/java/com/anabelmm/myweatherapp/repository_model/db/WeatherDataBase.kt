@@ -33,11 +33,8 @@ abstract class WeatherDataBase : RoomDatabase() {
                 INSTANCE = instance
                 // return instance
                 instance
-
             }
-
         }
-
     }
 
     private class WeatherDataBaseCallback(
